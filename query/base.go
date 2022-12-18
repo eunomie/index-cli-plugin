@@ -75,10 +75,10 @@ func Detect(sb *types.Sbom, excludeSelf bool, workspace string, apiKey string) (
 	var index int
 	for i := range digests {
 		chainIds = append(chainIds, digests[i])
-		chainId := identity.ChainID(chainIds)
-		result, err := ForBaseImageInDb(chainId, workspace, apiKey)
+		chainID := identity.ChainID(chainIds)
+		result, err := ForBaseImageInDb(chainID, workspace, apiKey)
 		if err != nil || result == nil {
-			result, err = ForBaseImageInIndex(chainId, workspace, apiKey)
+			result, err = ForBaseImageInIndex(chainID, workspace, apiKey)
 			if err != nil {
 				return nil, -1, err
 			}
@@ -111,14 +111,14 @@ func ForBaseImageInIndex(digest digest.Digest, workspace string, apiKey string) 
 		}
 		var ii types.IndexImage
 		for _, i := range manifestList[0].Images {
-			if i.DigestChainId == digest.String() || i.DiffIdChainId == digest.String() {
+			if i.DigestChainID == digest.String() || i.DiffIDChainID == digest.String() {
 				ii = i
 				break
 			}
 		}
 		repository, err := ForRepositoryInDb(manifestList[0].Name, workspace, apiKey)
 		if err != nil {
-			return nil, errors.Wrapf(err, "failed to query for respository")
+			return nil, errors.Wrapf(err, "failed to query for repository")
 		}
 		image := types.Image{
 			Digest:     ii.Digest,
@@ -150,7 +150,7 @@ func ForBaseImageWithoutCve(cve string, name string, sb *types.Sbom, workspace s
 		for _, img := range result.Query.Data {
 			tba := true
 			for j := range images {
-				if images[j].Digest == img[0].Digest && img[0].TeamId == "A11PU8L1C" {
+				if images[j].Digest == img[0].Digest && img[0].TeamID == "A11PU8L1C" {
 					images[j] = img[0]
 					tba = false
 					break
@@ -168,9 +168,8 @@ func ForBaseImageWithoutCve(cve string, name string, sb *types.Sbom, workspace s
 			return both[0] == itag
 		})
 		return &images, nil
-	} else {
-		return nil, nil
 	}
+	return nil, nil
 }
 
 // ForBaseImageInDb returns images with matching digest in :docker.image/blob-digest or :docker.image/diff-chain-id
@@ -188,7 +187,7 @@ func ForBaseImageInDb(digest digest.Digest, workspace string, apiKey string) (*[
 		for _, img := range result.Query.Data {
 			tba := true
 			for j := range images {
-				if images[j].Digest == img[0].Digest && img[0].TeamId == "A11PU8L1C" {
+				if images[j].Digest == img[0].Digest && img[0].TeamID == "A11PU8L1C" {
 					images[j] = img[0]
 					tba = false
 					break
@@ -199,9 +198,8 @@ func ForBaseImageInDb(digest digest.Digest, workspace string, apiKey string) (*[
 			}
 		}
 		return &images, nil
-	} else {
-		return nil, nil
 	}
+	return nil, nil
 }
 
 func ForRepositoryInDb(repo string, workspace string, apiKey string) (*types.Repository, error) {
@@ -214,9 +212,8 @@ func ForRepositoryInDb(repo string, workspace string, apiKey string) (*types.Rep
 	}
 	if len(result.Query.Data) > 0 {
 		return &result.Query.Data[0][0], nil
-	} else {
-		return nil, nil
 	}
+	return nil, nil
 }
 
 func ForBaseImageInGraphQL(cfg *v1.ConfigFile) (*types.BaseImagesByDiffIdsQuery, error) {
@@ -284,7 +281,7 @@ func ForImageInGraphQL(sb *types.Sbom) (*types.ImageByDigestQuery, error) {
 }
 
 func normalizeRepository(image *types.BaseImage) *types.BaseImage {
-	if image.Repository.Host == "hub.docker.com" && strings.Index(image.Repository.Repo, "/") < 0 {
+	if image.Repository.Host == "hub.docker.com" && !strings.Contains(image.Repository.Repo, "/") {
 		image.Repository.Badge = "OFFICIAL"
 	}
 	if image.Repository.Badge != "" {

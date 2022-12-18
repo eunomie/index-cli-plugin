@@ -26,7 +26,7 @@ func TestMergePackages(t *testing.T) {
 		Files: []Location{{
 			Path:   "/bar",
 			Digest: "sha256:1234",
-			DiffId: "sha256:1234",
+			DiffID: "sha256:1234",
 		}},
 	}
 	pkgb := Package{
@@ -34,11 +34,11 @@ func TestMergePackages(t *testing.T) {
 		Files: []Location{{
 			Path:   "/bar",
 			Digest: "sha256:1234",
-			DiffId: "sha256:1234",
+			DiffID: "sha256:1234",
 		}, {
 			Path:   "/bla",
 			Digest: "sha256:5678",
-			DiffId: "sha256:5678",
+			DiffID: "sha256:5678",
 		}},
 	}
 	packages := MergePackages(IndexResult{

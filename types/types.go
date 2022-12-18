@@ -29,40 +29,40 @@ type Reference struct {
 }
 
 type Cwe struct {
-	SourceId string `edn:"vulnerability.cwe/source-id" json:"source_id"`
+	SourceID string `edn:"vulnerability.cwe/source-id" json:"source_id"`
 	Name     string `edn:"vulnerability.cwe/name" json:"name,omitempty"`
 }
 
-type Url struct {
+type URL struct {
 	Name  string `edn:"vulnerability.url/name" json:"name"`
 	Value string `edn:"vulnerability.url/value" json:"value,omitempty"`
 }
 
 type Advisory struct {
 	Source      string      `edn:"vulnerability/source" json:"source"`
-	SourceId    string      `edn:"vulnerability/source-id" json:"source_id"`
+	SourceID    string      `edn:"vulnerability/source-id" json:"source_id"`
 	References  []Reference `edn:"vulnerability/references" json:"references"`
 	Description string      `edn:"vulnerability/description" json:"description,omitempty"`
 	Cwes        []Cwe       `edn:"vulnerability/cwes" json:"cwes,omitempty"`
-	Urls        []Url       `edn:"vulnerability/urls" json:"urls,omitempty"`
+	Urls        []URL       `edn:"vulnerability/urls" json:"urls,omitempty"`
 }
 
 type Cve struct {
 	Purl            string    `edn:"purl" json:"purl"`
 	Source          string    `edn:"source" json:"source"`
-	SourceId        string    `edn:"source-id" json:"source_id"`
+	SourceID        string    `edn:"source-id" json:"source_id"`
 	VulnerableRange string    `edn:"vulnerable-range" json:"vulnerable_range"`
-	AdvisoryUrl     string    `edn:"url" json:"-"`
+	AdvisoryURL     string    `edn:"url" json:"-"`
 	FixedBy         string    `edn:"fixed-by" json:"fixed_by,omitempty"`
 	Advisory        *Advisory `edn:"v" json:"vendor_advisory,omitempty"`
 	Cve             *Advisory `edn:"cve" json:"nist_cve,omitempty"`
 }
 
 type LayerMapping struct {
-	ByDiffId        map[string]string
+	ByDiffID        map[string]string
 	ByDigest        map[string]string
-	OrdinalByDiffId map[string]int
-	DiffIdByOrdinal map[int]string
+	OrdinalByDiffID map[string]int
+	DiffIDByOrdinal map[int]string
 	DigestByOrdinal map[int]string
 }
 
@@ -100,7 +100,7 @@ type Platform struct {
 type Location struct {
 	Path   string `json:"path"`
 	Digest string `json:"digest"`
-	DiffId string `json:"diff_id"`
+	DiffID string `json:"diff_id"`
 }
 
 type ImageSource struct {
@@ -145,7 +145,7 @@ type Package struct {
 	Author        string     `json:"author,omitempty"`
 	Description   string     `json:"description,omitempty"`
 	Licenses      []string   `json:"licenses,omitempty"`
-	Url           string     `json:"url,omitempty"`
+	URL           string     `json:"url,omitempty"`
 	Size          int        `json:"size,omitempty"`
 	InstalledSize int        `json:"installed_size,omitempty"`
 	Locations     []Location `json:"locations"`

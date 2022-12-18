@@ -89,11 +89,11 @@ func stringsNodeDetector(executable string, versionEnvVar string, expr *regexp.R
 					}
 
 					pkg.Version = version
-					pkg.Purl = types.PackageToPackageUrl(pkg).String()
+					pkg.Purl = types.PackageToPackageURL(pkg).String()
 					pkg.Locations = []types.Location{{
 						Path:   fp,
-						DiffId: loc.FileSystemID,
-						Digest: lm.ByDiffId[loc.FileSystemID],
+						DiffID: loc.FileSystemID,
+						Digest: lm.ByDiffID[loc.FileSystemID],
 					}}
 					return []types.Package{pkg}
 				}

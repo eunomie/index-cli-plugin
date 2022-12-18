@@ -42,32 +42,32 @@ import (
 	"github.com/docker/index-cli-plugin/internal"
 )
 
-type ImageId struct {
+type ImageID struct {
 	name string
 }
 
-func (i ImageId) Context() name.Repository {
+func (i ImageID) Context() name.Repository {
 	return name.Repository{}
 }
 
-func (i ImageId) Identifier() string {
+func (i ImageID) Identifier() string {
 	return i.name
 }
 
-func (i ImageId) Name() string {
+func (i ImageID) Name() string {
 	return i.name
 }
 
-func (i ImageId) Scope(s string) string {
+func (i ImageID) Scope(s string) string {
 	return ""
 }
 
-func (i ImageId) String() string {
+func (i ImageID) String() string {
 	return i.name
 }
 
 type ImageCache struct {
-	Id     string
+	ID     string
 	Digest string
 	Name   string
 	Tags   []string
@@ -103,7 +103,7 @@ func (c *ImageCache) StoreImage() error {
 		skill.Log.Infof("Copied image")
 		return nil
 	} else if format == "tar" {
-		u := make(chan v1.Update, 0)
+		u := make(chan v1.Update)
 		errchan := make(chan error)
 		go func() {
 			if err := tarball.WriteToFile(c.ImagePath, *c.Ref, *c.Image, tarball.WithProgress(u)); err != nil {
@@ -134,11 +134,10 @@ func (c *ImageCache) StoreImage() error {
 			case err = <-errchan:
 				if err != nil {
 					return err
-				} else {
-					spinner.Stop()
-					skill.Log.Infof("Copied image")
-					return nil
 				}
+				spinner.Stop()
+				skill.Log.Infof("Copied image")
+				return nil
 			}
 		}
 	}
@@ -189,7 +188,7 @@ func SaveImage(image string, cli command.Cli) (*ImageCache, error) {
 	// check local first because it is the fastest
 	im, _, err := cli.Client().ImageInspectWithRaw(context.Background(), image)
 	if err == nil {
-		img, err := daemon.Image(ImageId{name: image}, daemon.WithClient(cli.Client()))
+		img, err := daemon.Image(ImageID{name: image}, daemon.WithClient(cli.Client()))
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to pull image: %s", image)
 		}
@@ -208,7 +207,7 @@ func SaveImage(image string, cli command.Cli) (*ImageCache, error) {
 			tags = append(tags, strings.Split(t, ":")[1])
 		}
 		return &ImageCache{
-			Id:     im.ID,
+			ID:     im.ID,
 			Digest: digest,
 			Name:   name,
 			Tags:   tags,
@@ -244,7 +243,7 @@ func SaveImage(image string, cli command.Cli) (*ImageCache, error) {
 		return nil, errors.Wrapf(err, "failed to create cache paths")
 	}
 	return &ImageCache{
-		Id:     digest,
+		ID:     digest,
 		Digest: digest,
 		Name:   image,
 		Image:  &img,

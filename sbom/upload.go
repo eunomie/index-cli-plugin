@@ -45,10 +45,10 @@ func UploadSbom(sb *types.Sbom, workspace string, apikey string) error {
 	manifest := (*sb).Source.Image.Manifest
 
 	now := time.Now()
-	correlationId := uuid.NewString()
+	correlationID := uuid.NewString()
 	context := skill.RequestContext{
 		Event: skill.EventIncoming{
-			ExecutionId: correlationId,
+			ExecutionId: correlationID,
 			WorkspaceId: workspace,
 			Token:       apikey,
 		},
@@ -58,7 +58,7 @@ func UploadSbom(sb *types.Sbom, workspace string, apikey string) error {
 	env, envVars := parseEnvVars(config)
 	sha := parseSha(config)
 	labels := parseLabels(config)
-	diffIds := diffIdChainIds(config)
+	diffIds := diffIDChainIDs(config)
 	digests := digestChainIds(manifest)
 
 	repository := RepositoryEntity{
@@ -76,7 +76,7 @@ func UploadSbom(sb *types.Sbom, workspace string, apikey string) error {
 		blob := BlobEntity{
 			Size:   manifest.Layers[lc].Size,
 			Digest: manifest.Layers[lc].Digest.String(),
-			DiffId: config.RootFS.DiffIDs[lc].String(),
+			DiffID: config.RootFS.DiffIDs[lc].String(),
 		}
 		layer := LayerEntity{
 			Ordinal:     i,
@@ -85,7 +85,7 @@ func UploadSbom(sb *types.Sbom, workspace string, apikey string) error {
 			CreatedAt:   l.Created.Time,
 			CreatedBy:   l.CreatedBy,
 			BlobDigest:  digests[lc].String(),
-			ChainId:     diffIds[lc].String(),
+			ChainID:     diffIds[lc].String(),
 		}
 		layers = append(layers, layer)
 		lc++
@@ -102,7 +102,7 @@ func UploadSbom(sb *types.Sbom, workspace string, apikey string) error {
 		EnvironmentVariables: &envVars,
 		Layers:               &layers,
 		BlobDigest:           digests[len(digests)-1].String(),
-		DiffChainId:          diffIds[len(diffIds)-1].String(),
+		DiffChainID:          diffIds[len(diffIds)-1].String(),
 
 		SbomVersion:      sb.Descriptor.SbomVersion,
 		SbomState:        Indexing,
@@ -155,7 +155,7 @@ func UploadSbom(sb *types.Sbom, workspace string, apikey string) error {
 			files := make([]FileEntity, 0)
 			for _, f := range p.Locations {
 				files = append(files, FileEntity{
-					Id:     internal.Hash(fmt.Sprintf("%s %s %s", p.Purl, f.Path, f.Digest)),
+					ID:     internal.Hash(fmt.Sprintf("%s %s %s", p.Purl, f.Path, f.Digest)),
 					Path:   f.Path,
 					Digest: f.Digest,
 				})
@@ -170,9 +170,9 @@ func UploadSbom(sb *types.Sbom, workspace string, apikey string) error {
 				Author:      p.Author,
 				Licenses:    p.Licenses,
 				Description: p.Description,
-				Url:         p.Url,
+				URL:         p.URL,
 				Size:        p.Size,
-				AdvisoryUrl: types.ToAdvisoryUrl(p),
+				AdvisoryURL: types.ToAdvisoryURL(p),
 			}
 
 			dep := DependencyEntity{
@@ -222,7 +222,7 @@ func digestChainIds(manifest *v1.Manifest) []digest.Digest {
 	return digests
 }
 
-func diffIdChainIds(config *v1.ConfigFile) []digest.Digest {
+func diffIDChainIDs(config *v1.ConfigFile) []digest.Digest {
 	diffIds := make([]digest.Digest, 0)
 	for _, d := range config.RootFS.DiffIDs {
 		p, _ := digest.Parse(d.String())
@@ -293,9 +293,7 @@ func parseReference(sb *types.Sbom) (string, string, error) {
 		host = "hub.docker.com"
 	}
 	name := ref.Context().RepositoryStr()
-	if strings.HasPrefix(name, "library/") {
-		name = name[len("library/"):]
-	}
+	name = strings.TrimPrefix(name, "library/")
 	return host, name, nil
 }
 
@@ -344,14 +342,14 @@ type LayerEntity struct {
 	CreatedAt    time.Time  `edn:"docker.image.layer/created-at"`
 	CreatedBy    string     `edn:"docker.image.layer/created-by"`
 	BlobDigest   string     `edn:"docker.image.layer/blob-digest"`
-	ChainId      string     `edn:"docker.image.layer/chain-id"`
+	ChainID      string     `edn:"docker.image.layer/chain-id"`
 }
 
 type BlobEntity struct {
 	skill.Entity `entity-type:"docker.image/blob"`
 	Size         int64  `edn:"docker.image.blob/size"`
 	Digest       string `edn:"docker.image.blob/digest"`
-	DiffId       string `edn:"docker.image.blob/diff-id"`
+	DiffID       string `edn:"docker.image.blob/diff-id"`
 }
 
 type ImageEntity struct {
@@ -367,7 +365,7 @@ type ImageEntity struct {
 	EnvironmentVariables *[]EnvironmentVariableEntity `edn:"docker.image/environment-variables,omitempty"`
 	Layers               *[]LayerEntity               `edn:"docker.image/layers,omitempty"`
 	BlobDigest           string                       `edn:"docker.image/blob-digest,omitempty"`
-	DiffChainId          string                       `edn:"docker.image/diff-chain-id,omitempty"`
+	DiffChainID          string                       `edn:"docker.image/diff-chain-id,omitempty"`
 	Sha                  string                       `edn:"docker.image/sha,omitempty"`
 
 	SbomState        edn.Keyword `edn:"sbom/state"`
@@ -393,14 +391,14 @@ type PackageEntity struct {
 	Author       string   `edn:"package/author,omitempty"`
 	Licenses     []string `edn:"package/licenses,omitempty"`
 	Description  string   `edn:"package/description,omitempty"`
-	Url          string   `edn:"package/homepage,omitempty"`
+	URL          string   `edn:"package/homepage,omitempty"`
 	Size         int      `edn:"package/size,omitempty"`
-	AdvisoryUrl  string   `edn:"package/advisory-url"`
+	AdvisoryURL  string   `edn:"package/advisory-url"`
 }
 
 type FileEntity struct {
 	skill.Entity `entity-type:"package/file"`
-	Id           string `edn:"package.file/id"`
+	ID           string `edn:"package.file/id"`
 	Path         string `edn:"package.file/path"`
 	Digest       string `edn:"package.file/digest"`
 }

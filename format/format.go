@@ -130,7 +130,7 @@ func CurrentTag(image *types.Image) string {
 }
 
 func RenderCommit(image *types.Image) string {
-	if image.TeamId == "A11PU8L1C" {
+	if image.TeamID == "A11PU8L1C" {
 		return fmt.Sprintf("https://dso.docker.com/images/%s/digests/%s", image.Repository.Name, image.Digest)
 	} else if image.Commit.Sha != "" {
 		url := fmt.Sprintf("https://github.com/%s/%s", image.Commit.Repo.Org.Name, image.Commit.Repo.Name)
@@ -169,13 +169,13 @@ func RenderVulnerabilities(image *types.Image) string {
 }
 
 func Cve(sb *types.Sbom, c *types.Cve) {
-	sourceId := c.SourceId
+	sourceID := c.SourceID
 	if c.Cve != nil {
-		sourceId = c.Cve.SourceId
+		sourceID = c.Cve.SourceID
 	}
 	fmt.Println("")
-	fmt.Println(defaultColors.underline.Sprintf(fmt.Sprintf("Detected %s %s", sourceId, ColorizeSeverity(ToSeverity(*c)))))
-	fmt.Println(fmt.Sprintf("https://dso.docker.com/cve/%s", sourceId))
+	fmt.Println(defaultColors.underline.Sprintf(fmt.Sprintf("Detected %s %s", sourceID, ColorizeSeverity(ToSeverity(*c)))))
+	fmt.Printf("https://dso.docker.com/cve/%s\n", sourceID)
 	fmt.Println("")
 	purl := c.Purl
 	for _, p := range sb.Artifacts {
@@ -183,10 +183,10 @@ func Cve(sb *types.Sbom, c *types.Cve) {
 			fmt.Println(defaultColors.cyan.Sprintf(p.Purl))
 			loc := p.Locations[0]
 			for i, l := range sb.Source.Image.Config.RootFS.DiffIDs {
-				if l.String() == loc.DiffId {
+				if l.String() == loc.DiffID {
 					h := sb.Source.Image.Config.History[i]
 					fmt.Println(formatCreatedBy(h.CreatedBy))
-					fmt.Println(fmt.Sprintf("%d: %s", i, loc.Digest))
+					fmt.Printf("%d: %s\n", i, loc.Digest)
 				}
 			}
 		}
@@ -198,13 +198,13 @@ func Remediation(remediation []string) {
 		fmt.Println("")
 		fmt.Println(defaultColors.underline.Sprintf("Suggested remediation"))
 		for i, r := range remediation {
-			fmt.Println(fmt.Sprintf("\n%d. %s", i+1, r))
+			fmt.Printf("\n%d. %s\n", i+1, r)
 		}
 	}
 }
 
 func PackageRemediation(p types.Package, c types.Cve) string {
-	purl, _ := types.ToPackageUrl(p.Purl)
+	purl, _ := types.ToPackageURL(p.Purl)
 	if c.FixedBy != "not fixed" {
 		switch purl.Type {
 		case "alpine":
@@ -215,7 +215,7 @@ Add the following to your Dockerfile
 # docker-start: fix for https://dso.docker.com/cve/%s
 RUN apk add --no-cache \\
   %s=%s
-# docker-end`, purl.Name, c.FixedBy, c.SourceId, purl.Name, c.FixedBy)
+# docker-end`, purl.Name, c.FixedBy, c.SourceID, purl.Name, c.FixedBy)
 		case "deb":
 			return fmt.Sprintf(`Manually update package %s to %s
 
@@ -226,7 +226,7 @@ RUN apt-get update && apt-get install -y \\
   %s=%s \\
   && apt-get clean -y \\
   && rm -rf /var/cache/apt /var/lib/apt/lists/* /tmp/* /var/tmp/*
-# docker-end`, purl.Name, c.FixedBy, c.SourceId, purl.Name, c.FixedBy)
+# docker-end`, purl.Name, c.FixedBy, c.SourceID, purl.Name, c.FixedBy)
 		}
 	}
 	return ""

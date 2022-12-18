@@ -101,7 +101,7 @@ func trivySbom(ociPath string, lm types.LayerMapping, resultChan chan<- types.In
 					}
 
 					url := fmt.Sprintf(`pkg:golang/%s@%s`, lib.Name, lib.Version)
-					purl, err := types.ToPackageUrl(url)
+					purl, err := types.ToPackageURL(url)
 					if err != nil {
 						result.Status = types.Failed
 						result.Error = errors.Wrapf(err, "failed to create purl from %s", url)
@@ -111,8 +111,8 @@ func trivySbom(ociPath string, lm types.LayerMapping, resultChan chan<- types.In
 						Purl: purl.String(),
 						Locations: []types.Location{{
 							Path:   "/" + app.FilePath,
-							Digest: lm.ByDiffId[lib.Layer.DiffID],
-							DiffId: lib.Layer.DiffID,
+							Digest: lm.ByDiffID[lib.Layer.DiffID],
+							DiffID: lib.Layer.DiffID,
 						}},
 					}
 					result.Packages = append(result.Packages, pkg)
@@ -127,7 +127,7 @@ func trivySbom(ociPath string, lm types.LayerMapping, resultChan chan<- types.In
 					name := strings.Split(lib.Name, ":")[1]
 
 					url := fmt.Sprintf(`pkg:maven/%s/%s@%s`, namespace, name, lib.Version)
-					purl, err := types.ToPackageUrl(url)
+					purl, err := types.ToPackageURL(url)
 					if err != nil {
 						result.Status = types.Failed
 						result.Error = errors.Wrapf(err, "failed to create purl from %s", url)
@@ -138,8 +138,8 @@ func trivySbom(ociPath string, lm types.LayerMapping, resultChan chan<- types.In
 						Purl: purl.String(),
 						Locations: []types.Location{{
 							Path:   "/" + lib.FilePath,
-							Digest: lm.ByDiffId[lib.Layer.DiffID],
-							DiffId: lib.Layer.DiffID,
+							Digest: lm.ByDiffID[lib.Layer.DiffID],
+							DiffID: lib.Layer.DiffID,
 						}},
 					}
 					result.Packages = append(result.Packages, pkg)

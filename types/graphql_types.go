@@ -67,11 +67,11 @@ type ImageByDigestQuery struct {
 
 type Vulnerability struct {
 	Source          string `graphql:"source" json:"source,omitempty"`
-	SourceId        string `graphql:"sourceId" json:"source_id,omitempty"`
+	SourceID        string `graphql:"sourceId" json:"source_id,omitempty"`
 	Description     string `graphql:"description" json:"description,omitempty"`
 	VulnerableRange string `graphql:"vulnerableRange" json:"vulnerable_range,omitempty"`
 	FixedBy         string `graphql:"fixedBy" json:"fixed_by,omitempty"`
-	Url             string `graphql:"url" json:"url,omitempty"`
+	URL             string `graphql:"url" json:"url,omitempty"`
 	Cvss            struct {
 		Score    float32 `graphql:"score" json:"score,omitempty"`
 		Severity string  `graphql:"severity" json:"severity,omitempty"`
@@ -79,7 +79,7 @@ type Vulnerability struct {
 		Version  string  `graphql:"version" json:"version,omitempty"`
 	} `graphql:"cvss" json:"cvss,omitempty"`
 	Cwes []struct {
-		CweId string `graphql:"cweId" json:"cwe_id,omitempty"`
+		CweID string `graphql:"cweId" json:"cwe_id,omitempty"`
 		Name  string `graphql:"description" json:"name,omitempty"`
 	} `graphql:"cwes" json:"cwes,omitempty"`
 }

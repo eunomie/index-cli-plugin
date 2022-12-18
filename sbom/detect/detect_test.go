@@ -31,11 +31,11 @@ import (
 
 func TestNodeDetector(t *testing.T) {
 	cmd, _ := command.NewDockerCli()
-	cmd.Initialize(flags.NewClientOptions())
+	_ = cmd.Initialize(flags.NewClientOptions())
 	cache, _ := registry.SaveImage("atomist/skill@sha256:a691a1ccfa81ab7cc6b422a53bfb9bbcea4d78873426b0389eec8f554da9b0b8", cmd)
-	cache.StoreImage()
+	_ = cache.StoreImage()
 	lm := types.LayerMapping{
-		ByDiffId: make(map[string]string),
+		ByDiffID: make(map[string]string),
 	}
 	i := source.Input{
 		Scheme:      source.ImageScheme,

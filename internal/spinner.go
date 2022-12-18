@@ -64,7 +64,7 @@ func StartInfoSpinner(text string, isTerminal bool) *Spinner {
 func StartSpinner(level string, text string, isTerminal bool) *Spinner {
 	if isTerminal {
 		s := spinner.New(spinner.CharSets[14], 100*time.Millisecond)
-		s.Color("yellow")
+		_ = s.Color("yellow")
 
 		spinner := &Spinner{
 			level:      level,
@@ -74,14 +74,14 @@ func StartSpinner(level string, text string, isTerminal bool) *Spinner {
 		spinner.Update(text)
 		s.Start()
 		return spinner
-	} else {
-		spinner := &Spinner{
-			level:      level,
-			isTerminal: false,
-		}
-		spinner.Update(text)
-		return spinner
 	}
+
+	spinner := &Spinner{
+		level:      level,
+		isTerminal: false,
+	}
+	spinner.Update(text)
+	return spinner
 }
 
 func colorizeLevel(level string) string {

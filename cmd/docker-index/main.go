@@ -61,10 +61,8 @@ func main() {
 		err = runPlugin(cmd)
 	}
 
-	if err == nil {
-		return
+	if err != nil {
+		skill.Log.Errorf("%s", err)
+		os.Exit(1)
 	}
-
-	skill.Log.Errorf("%s", err)
-	os.Exit(1)
 }

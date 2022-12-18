@@ -42,7 +42,7 @@ func Cves(cve string, cves *[]types.Cve, sb *types.Sbom, remediate bool, dockerC
 				if p.Purl == c.Purl {
 					loc := p.Locations[0]
 					for i, l := range sb.Source.Image.Config.RootFS.DiffIDs {
-						if l.String() == loc.DiffId && layerIndex < i {
+						if l.String() == loc.DiffID && layerIndex < i {
 							layerIndex = i
 						}
 					}
@@ -71,7 +71,7 @@ func Cves(cve string, cves *[]types.Cve, sb *types.Sbom, remediate bool, dockerC
 			if baseImage != nil {
 				s := internal.StartInfoSpinner("Finding alternative base images", dockerCli.Out().IsTerminal())
 				defer s.Stop()
-				aBaseImage, _ := query.ForBaseImageWithoutCve(c.SourceId, baseImage.Repository.Name, sb, workspace, apiKey)
+				aBaseImage, _ := query.ForBaseImageWithoutCve(c.SourceID, baseImage.Repository.Name, sb, workspace, apiKey)
 				s.Stop()
 
 				if aBaseImage != nil && len(*aBaseImage) > 0 {
@@ -87,7 +87,7 @@ func Cves(cve string, cves *[]types.Cve, sb *types.Sbom, remediate bool, dockerC
 						}
 					}
 
-					e := []string{fmt.Sprintf("Update base image\n\nAlternative base images not vulnerable to %s", c.SourceId)}
+					e := []string{fmt.Sprintf("Update base image\n\nAlternative base images not vulnerable to %s", c.SourceID)}
 					if len(mBaseImages) > 0 {
 						for _, a := range mBaseImages {
 							e = append(e, Image(&a, false))
@@ -103,6 +103,6 @@ func Cves(cve string, cves *[]types.Cve, sb *types.Sbom, remediate bool, dockerC
 			Remediation(remediation)
 		}
 	} else {
-		fmt.Println(fmt.Sprintf("%s not detected", cve))
+		fmt.Printf("%s not detected\n", cve)
 	}
 }

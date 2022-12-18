@@ -82,7 +82,7 @@ func IndexImage(image string, cli command.Cli) (*types.Sbom, error) {
 
 func indexImage(cache *registry.ImageCache, cli command.Cli) (*types.Sbom, error) {
 	configFilePath := cli.ConfigFile().Filename
-	sbomFilePath := filepath.Join(filepath.Dir(configFilePath), "sbom", "sha256", cache.Id[7:], "sbom.json")
+	sbomFilePath := filepath.Join(filepath.Dir(configFilePath), "sbom", "sha256", cache.ID[7:], "sbom.json")
 	if sbom := cachedSbom(sbomFilePath); sbom != nil {
 		return sbom, nil
 	}
@@ -113,6 +113,9 @@ func indexImage(cache *registry.ImageCache, cli command.Cli) (*types.Sbom, error
 	}
 
 	trivyResult.Packages, err = types.NormalizePackages(trivyResult.Packages)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to normalize packagess: %s", cache.Name)
+	}
 	syftResult.Packages, err = types.NormalizePackages(syftResult.Packages)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to normalize packagess: %s", cache.Name)
@@ -196,25 +199,25 @@ func cachedSbom(sbomFilePath string) *types.Sbom {
 
 func createLayerMapping(img v1.Image) types.LayerMapping {
 	lm := types.LayerMapping{
-		ByDiffId:        make(map[string]string, 0),
+		ByDiffID:        make(map[string]string, 0),
 		ByDigest:        make(map[string]string, 0),
-		DiffIdByOrdinal: make(map[int]string, 0),
+		DiffIDByOrdinal: make(map[int]string, 0),
 		DigestByOrdinal: make(map[int]string, 0),
-		OrdinalByDiffId: make(map[string]int, 0),
+		OrdinalByDiffID: make(map[string]int, 0),
 	}
 	config, _ := img.ConfigFile()
-	diffIds := config.RootFS.DiffIDs
+	diffIDs := config.RootFS.DiffIDs
 	manifest, _ := img.Manifest()
 	layers := manifest.Layers
 
 	for i := range layers {
 		layer := layers[i]
-		diffId := diffIds[i]
+		diffID := diffIDs[i]
 
-		lm.ByDiffId[diffId.String()] = layer.Digest.String()
-		lm.ByDigest[layer.Digest.String()] = diffId.String()
-		lm.OrdinalByDiffId[diffId.String()] = i
-		lm.DiffIdByOrdinal[i] = diffId.String()
+		lm.ByDiffID[diffID.String()] = layer.Digest.String()
+		lm.ByDigest[layer.Digest.String()] = diffID.String()
+		lm.OrdinalByDiffID[diffID.String()] = i
+		lm.DiffIDByOrdinal[i] = diffID.String()
 		lm.DigestByOrdinal[i] = layer.Digest.String()
 	}
 

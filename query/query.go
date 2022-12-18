@@ -67,7 +67,7 @@ func CheckAuth(workspace string, apiKey string) (bool, error) {
 func QueryCves(sb *types.Sbom, cve string, workspace string, apiKey string) (*[]types.Cve, error) {
 	pkgs := make([]string, 0)
 	for _, p := range sb.Artifacts {
-		pkgs = append(pkgs, fmt.Sprintf(`["%s" "%s" "%s" "%s"]`, p.Purl, p.Type, p.Version, types.ToAdvisoryUrl(p)))
+		pkgs = append(pkgs, fmt.Sprintf(`["%s" "%s" "%s" "%s"]`, p.Purl, p.Type, p.Version, types.ToAdvisoryURL(p)))
 	}
 
 	var q, name string
@@ -95,16 +95,13 @@ func QueryCves(sb *types.Sbom, cve string, workspace string, apiKey string) (*[]
 		}
 		fcves := internal.UniqueBy(result.Query.Data[0].Cves, func(cve types.Cve) string {
 			if cve.Cve != nil {
-				return fmt.Sprintf("%s %s", cve.Purl, cve.Cve.SourceId)
-			} else {
-				return fmt.Sprintf("%s %s", cve.Purl, cve.Advisory.SourceId)
+				return fmt.Sprintf("%s %s", cve.Purl, cve.Cve.SourceID)
 			}
+			return fmt.Sprintf("%s %s", cve.Purl, cve.Advisory.SourceID)
 		})
 		return &fcves, nil
-
-	} else {
-		return nil, nil
 	}
+	return nil, nil
 }
 
 func query(query string, name string, workspace string, apiKey string) (*http.Response, error) {

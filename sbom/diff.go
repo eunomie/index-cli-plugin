@@ -21,7 +21,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/anchore/packageurl-go"
 	"github.com/gookit/color"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
@@ -86,27 +85,14 @@ func DiffImages(image1 string, image2 string, cli command.Cli, workspace string,
 func toPackageKey(pkg types.Package) string {
 	if pkg.Namespace != "" {
 		return fmt.Sprintf("%s/%s/%s", pkg.Type, pkg.Namespace, pkg.Name)
-	} else {
-		return fmt.Sprintf("%s/%s", pkg.Type, pkg.Name)
 	}
-}
-
-func toPackageName(pkg packageurl.PackageURL) string {
-	if pkg.Namespace != "" {
-		return fmt.Sprintf("%s/%s/%s", pkg.Type, pkg.Namespace, pkg.Name)
-	} else {
-		return fmt.Sprintf("%s/%s", pkg.Type, pkg.Name)
-	}
+	return fmt.Sprintf("%s/%s", pkg.Type, pkg.Name)
 }
 
 func toImageName(result ImageIndexResult) string {
 	imageName := result.Sbom.Source.Image.Name
-	if strings.HasPrefix(imageName, "index.docker.io/") {
-		imageName = imageName[len("index.docker.io/"):]
-	}
-	if strings.HasPrefix(imageName, "library/") {
-		imageName = imageName[len("library/"):]
-	}
+	imageName = strings.TrimPrefix(imageName, "index.docker.io/")
+	imageName = strings.TrimPrefix(imageName, "library/")
 	return imageName
 }
 
@@ -116,12 +102,10 @@ func toHeader(result1, result2 ImageIndexResult) (string, string) {
 	if image1.Name == image2.Name {
 		if image1.Tags != nil && image2.Tags != nil {
 			return (*image1.Tags)[0], (*image2.Tags)[0]
-		} else {
-			return image1.Digest[7:17], image2.Digest[7:17]
 		}
-	} else {
-		return toImageName(result1), toImageName(result2)
+		return image1.Digest[7:17], image2.Digest[7:17]
 	}
+	return toImageName(result1), toImageName(result2)
 }
 
 type PackageEntry struct {
@@ -239,7 +223,7 @@ type CveMap map[string]CveEntry
 	dc := 0
 	cves := make(CveMap)
 	for _, c := range result1.Sbom.Vulnerabilities {
-		key := c.SourceId
+		key := c.SourceID
 		if v, ok := cves[key]; ok {
 			v.image1 = append(v.image1, c)
 			cves[key] = v
@@ -251,7 +235,7 @@ type CveMap map[string]CveEntry
 		}
 	}
 	for _, c := range result2.Sbom.Vulnerabilities {
-		key := c.SourceId
+		key := c.SourceID
 		if v, ok := cves[key]; ok {
 			v.image2 = append(v.image2, c)
 			cves[key] = v
@@ -281,7 +265,7 @@ type CveMap map[string]CveEntry
 		var cve types.Cve
 		c1 := make([]string, 0)
 		for _, c := range v.image1 {
-			p, _ := types.ToPackageUrl(c.Purl)
+			p, _ := types.ToPackageURL(c.Purl)
 			pp := fmt.Sprintf("%s\n%s", toPackageName(p), p.Version)
 			if c.FixedBy != "not fixed" {
 				pp += fmt.Sprintf("\n> %s", c.FixedBy)
@@ -293,7 +277,7 @@ type CveMap map[string]CveEntry
 		}
 		c2 := make([]string, 0)
 		for _, c := range v.image2 {
-			p, _ := types.ToPackageUrl(c.Purl)
+			p, _ := types.ToPackageURL(c.Purl)
 			pp := fmt.Sprintf("%s\n%s", toPackageName(p), p.Version)
 			if c.FixedBy != "not fixed" {
 				pp += fmt.Sprintf("\n> %s", c.FixedBy)

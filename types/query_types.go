@@ -20,8 +20,8 @@ type IndexImage struct {
 		Size         int       `json:"size"`
 		LastModified time.Time `json:"lastModified"`
 	} `json:"layers"`
-	DigestChainId string `json:"digestChainId"`
-	DiffIdChainId string `json:"diffIdChainId"`
+	DigestChainID string `json:"digestChainId"`
+	DiffIDChainID string `json:"diffIdChainId"`
 }
 
 type IndexManifestList struct {
@@ -55,7 +55,7 @@ type Repository struct {
 }
 
 type Image struct {
-	TeamId    string    `edn:"atomist/team-id"`
+	TeamID    string    `edn:"atomist/team-id"`
 	Digest    string    `edn:"docker.image/digest"`
 	CreatedAt time.Time `edn:"docker.image/created-at"`
 	Tags      []string  `edn:"docker.image/tags"`
@@ -81,9 +81,7 @@ type Image struct {
 
 func ImageTags(image *Image) []string {
 	tags := make([]string, 0)
-	for _, tag := range image.Tags {
-		tags = append(tags, tag)
-	}
+	tags = append(tags, image.Tags...)
 	sort.Slice(tags, func(i, j int) bool {
 		return len(tags[i]) < len(tags[j])
 	})

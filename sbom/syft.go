@@ -64,7 +64,6 @@ func syftSbom(ociPath string, lm types.LayerMapping, resultChan chan<- types.Ind
 		result.Error = errors.Wrap(err, "failed to create image source")
 		resultChan <- result
 		return
-
 	}
 	defer cleanup()
 
@@ -74,7 +73,6 @@ func syftSbom(ociPath string, lm types.LayerMapping, resultChan chan<- types.Ind
 		result.Error = errors.Wrap(err, "failed to index image")
 		resultChan <- result
 		return
-
 	}
 
 	d, qualifiers := osQualifiers(distro)
@@ -91,7 +89,6 @@ func syftSbom(ociPath string, lm types.LayerMapping, resultChan chan<- types.Ind
 				result.Error = errors.Wrap(err, "failed to catalog apk packages")
 				resultChan <- result
 				return
-
 			}
 		}
 		layerPkgs = append(layerPkgs, apkPkgs...)
@@ -102,7 +99,6 @@ func syftSbom(ociPath string, lm types.LayerMapping, resultChan chan<- types.Ind
 				result.Error = errors.Wrap(err, "failed to catalog dep packages")
 				resultChan <- result
 				return
-
 			}
 		}
 		layerPkgs = append(layerPkgs, debPkgs...)
@@ -167,7 +163,7 @@ func toPackage(p pkg2.Package, rels []artifact.Relationship, qualifiers map[stri
 		pkg.Author = md.Packager
 		pkg.Description = md.Description
 		pkg.Size = md.Size
-		pkg.Url = md.URL
+		pkg.URL = md.URL
 
 		sourceNameAndVersion = sourcePackage{
 			name:         md.BasePackage,
@@ -180,7 +176,7 @@ func toPackage(p pkg2.Package, rels []artifact.Relationship, qualifiers map[stri
 		pkg.Description = md.Description
 		pkg.Size = md.Size
 		pkg.InstalledSize = md.InstalledSize
-		pkg.Url = md.URL
+		pkg.URL = md.URL
 
 		sourceNameAndVersion = sourcePackage{
 			name:         md.OriginPackage,
@@ -214,9 +210,9 @@ func toPackage(p pkg2.Package, rels []artifact.Relationship, qualifiers map[stri
 		pkg.Author = md.Author
 		pkg.Description = md.Description
 		if md.Homepage != "" {
-			pkg.Url = md.Homepage
+			pkg.URL = md.Homepage
 		} else {
-			pkg.Url = md.URL
+			pkg.URL = md.URL
 		}
 	case pkg2.RpmMetadataType:
 		md := p.Metadata.(pkg2.RpmMetadata)
@@ -241,7 +237,7 @@ func toPackage(p pkg2.Package, rels []artifact.Relationship, qualifiers map[stri
 	case pkg2.PhpComposerJSONMetadataType:
 		md := p.Metadata.(pkg2.PhpComposerJSONMetadata)
 		pkg.Description = md.Description
-		pkg.Url = md.NotificationURL
+		pkg.URL = md.NotificationURL
 	case pkg2.PortageMetadataType:
 		md := p.Metadata.(pkg2.PortageMetadata)
 		pkg.Size = md.InstalledSize
@@ -270,8 +266,8 @@ func toPackage(p pkg2.Package, rels []artifact.Relationship, qualifiers map[stri
 
 				pkg.Files = append(pkg.Files, types.Location{
 					Path:   path,
-					DiffId: corr.FileSystemID,
-					Digest: lm.ByDiffId[corr.FileSystemID],
+					DiffID: corr.FileSystemID,
+					Digest: lm.ByDiffID[corr.FileSystemID],
 				})
 			}
 		}
@@ -286,8 +282,8 @@ func toPackage(p pkg2.Package, rels []artifact.Relationship, qualifiers map[stri
 
 		pkg.Locations = append(pkg.Locations, types.Location{
 			Path:   path,
-			DiffId: loc.FileSystemID,
-			Digest: lm.ByDiffId[loc.FileSystemID],
+			DiffID: loc.FileSystemID,
+			Digest: lm.ByDiffID[loc.FileSystemID],
 		})
 	}
 
@@ -296,8 +292,8 @@ func toPackage(p pkg2.Package, rels []artifact.Relationship, qualifiers map[stri
 		if loc.Path == "/lib/apk/db/installed" || loc.Path == "/var/lib/dpkg/status" || loc.Path == "/var/lib/rpm/Packages" {
 			layer := pm[toKey(p)]
 			// the stereoscope layers use diff_ids internally as their digest
-			pkg.Locations[i].DiffId = layer.Metadata.Digest
-			pkg.Locations[i].Digest = lm.ByDiffId[layer.Metadata.Digest]
+			pkg.Locations[i].DiffID = layer.Metadata.Digest
+			pkg.Locations[i].Digest = lm.ByDiffID[layer.Metadata.Digest]
 		}
 	}
 
@@ -326,7 +322,7 @@ func toPackage(p pkg2.Package, rels []artifact.Relationship, qualifiers map[stri
 			Description:   pkg.Description,
 			Size:          pkg.Size,
 			InstalledSize: pkg.InstalledSize,
-			Url:           pkg.Url,
+			URL:           pkg.URL,
 			Locations:     pkg.Locations,
 		}
 		if sourceNameAndVersion.relationship == "parent" {

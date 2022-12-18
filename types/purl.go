@@ -30,7 +30,7 @@ func NormalizePackages(pkgs []Package) ([]Package, error) {
 	nPks := make([]Package, 0)
 	for i := range pkgs {
 		pkg := pkgs[i]
-		purl, err := ToPackageUrl(pkg.Purl)
+		purl, err := ToPackageURL(pkg.Purl)
 		if err != nil {
 			skill.Log.Warnf("Failed to parse purl: %s", pkg.Purl)
 			continue
@@ -42,9 +42,7 @@ func NormalizePackages(pkgs []Package) ([]Package, error) {
 		purl.Namespace = toNamespace(purl)
 
 		// some versions strings (e.g. such of Go) have a v prefix that we drop
-		if strings.HasPrefix(purl.Version, "v") {
-			purl.Version = purl.Version[1:]
-		}
+		purl.Version = strings.TrimPrefix(purl.Version, "v")
 		if purl.Version == "" {
 			purl.Version = "0.0.0"
 		}
@@ -93,15 +91,13 @@ func NormalizePackages(pkgs []Package) ([]Package, error) {
 	return nPks, nil
 }
 
-func ToPackageUrl(url string) (packageurl.PackageURL, error) {
-	if strings.HasSuffix(url, "/") {
-		url = url[0 : len(url)-1]
-	}
+func ToPackageURL(url string) (packageurl.PackageURL, error) {
+	url = strings.TrimSuffix(url, "/")
 	purl, err := packageurl.FromString(url)
 	return purl, err
 }
 
-func PackageToPackageUrl(pkp Package) *packageurl.PackageURL {
+func PackageToPackageURL(pkp Package) *packageurl.PackageURL {
 	return packageurl.NewPackageURL(pkp.Type, pkp.Namespace, pkp.Name, pkp.Version, packageurl.QualifiersFromMap(make(map[string]string)), "")
 }
 
@@ -146,13 +142,13 @@ func parseLicense(license string) []string {
 	}
 }
 
-func ToAdvisoryUrl(pkg Package) string {
+func ToAdvisoryURL(pkg Package) string {
 	namespace := pkg.Namespace
 	if namespace == "centos" && pkg.Type == "rpm" {
 		namespace = "redhatlinux"
 	}
 
-	purl, _ := ToPackageUrl(pkg.Purl)
+	purl, _ := ToPackageURL(pkg.Purl)
 	osName := purl.Qualifiers.Map()["os_name"]
 	osVersion := purl.Qualifiers.Map()["os_version"]
 	if osName == "centos" {
