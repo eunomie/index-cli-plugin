@@ -242,8 +242,8 @@ func ForBaseImageInGraphQL(cfg *v1.ConfigFile) (*types.BaseImagesByDiffIdsQuery,
 		return nil, errors.Wrapf(err, "failed to run query")
 	}
 	count := 0
-	for ii, _ := range q.ImagesByDiffIds {
-		for bi, _ := range q.ImagesByDiffIds[ii].Images {
+	for ii := range q.ImagesByDiffIds {
+		for bi := range q.ImagesByDiffIds[ii].Images {
 			count++
 			q.ImagesByDiffIds[ii].Images[bi].Repository = normalizeRepository(&q.ImagesByDiffIds[ii].Images[bi]).Repository
 		}

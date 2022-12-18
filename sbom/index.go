@@ -165,7 +165,7 @@ func indexImage(cache *registry.ImageCache, cli command.Cli) (*types.Sbom, error
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed create to sbom folder")
 		}
-		err = os.WriteFile(sbomFilePath, js, 0644)
+		err = os.WriteFile(sbomFilePath, js, 0o644)
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to write sbom")
 		}

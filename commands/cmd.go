@@ -132,7 +132,7 @@ func NewRootCmd(name string, isPlugin bool, dockerCli command.Cli) *cobra.Comman
 				return err
 			}
 			if output != "" {
-				_ = os.WriteFile(output, js, 0644)
+				_ = os.WriteFile(output, js, 0o644)
 				skill.Log.Infof("SBOM written to %s", output)
 			} else {
 				fmt.Println(string(js))
