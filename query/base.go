@@ -26,14 +26,16 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/atomist-skills/go-skill"
-	"github.com/docker/index-cli-plugin/types"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/hasura/go-graphql-client"
 	"github.com/opencontainers/go-digest"
 	"github.com/opencontainers/image-spec/identity"
 	"github.com/pkg/errors"
 	"olympos.io/encoding/edn"
+
+	"github.com/atomist-skills/go-skill"
+
+	"github.com/docker/index-cli-plugin/types"
 )
 
 type ImageQueryResult struct {

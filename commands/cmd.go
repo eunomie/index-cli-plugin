@@ -24,18 +24,21 @@ import (
 	"os"
 	"strings"
 
-	"github.com/atomist-skills/go-skill"
-	"github.com/docker/cli/cli"
-	"github.com/docker/cli/cli-plugins/plugin"
-	"github.com/docker/cli/cli/command"
-	"github.com/docker/index-cli-plugin/format"
-	"github.com/docker/index-cli-plugin/query"
-	"github.com/docker/index-cli-plugin/sbom"
-	"github.com/docker/index-cli-plugin/types"
 	"github.com/moby/term"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+
+	"github.com/atomist-skills/go-skill"
+
+	"github.com/docker/cli/cli"
+	"github.com/docker/cli/cli-plugins/plugin"
+	"github.com/docker/cli/cli/command"
+
+	"github.com/docker/index-cli-plugin/format"
+	"github.com/docker/index-cli-plugin/query"
+	"github.com/docker/index-cli-plugin/sbom"
+	"github.com/docker/index-cli-plugin/types"
 )
 
 func NewRootCmd(name string, isPlugin bool, dockerCli command.Cli) *cobra.Command {

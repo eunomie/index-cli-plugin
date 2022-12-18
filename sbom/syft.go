@@ -30,10 +30,11 @@ import (
 	"github.com/anchore/syft/syft/pkg/cataloger/deb"
 	"github.com/anchore/syft/syft/pkg/cataloger/rpm"
 	"github.com/anchore/syft/syft/source"
+	"github.com/pkg/errors"
+
 	"github.com/docker/index-cli-plugin/sbom/detect"
 	"github.com/docker/index-cli-plugin/sbom/util"
 	"github.com/docker/index-cli-plugin/types"
-	"github.com/pkg/errors"
 )
 
 type packageMapping map[string]*stereoscopeimage.Layer

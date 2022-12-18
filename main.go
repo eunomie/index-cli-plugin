@@ -21,10 +21,12 @@ import (
 	"os"
 
 	"github.com/atomist-skills/go-skill"
+
 	"github.com/docker/cli/cli-plugins/manager"
 	"github.com/docker/cli/cli-plugins/plugin"
 	"github.com/docker/cli/cli/command"
 	cliflags "github.com/docker/cli/cli/flags"
+
 	"github.com/docker/index-cli-plugin/commands"
 	"github.com/docker/index-cli-plugin/internal"
 )

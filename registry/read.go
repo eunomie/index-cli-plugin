@@ -17,9 +17,10 @@
 package registry
 
 import (
-	"github.com/atomist-skills/go-skill"
 	"github.com/google/go-containerregistry/pkg/v1/layout"
 	"github.com/pkg/errors"
+
+	"github.com/atomist-skills/go-skill"
 )
 
 func ReadImage(name string, path string) (*ImageCache, error) {

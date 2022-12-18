@@ -32,8 +32,9 @@ import (
 	"github.com/aquasecurity/trivy/pkg/fanal/cache"
 	"github.com/aquasecurity/trivy/pkg/fanal/image"
 	"github.com/aquasecurity/trivy/pkg/fanal/utils"
-	"github.com/docker/index-cli-plugin/types"
 	"github.com/pkg/errors"
+
+	"github.com/docker/index-cli-plugin/types"
 )
 
 func trivySbom(ociPath string, lm types.LayerMapping, resultChan chan<- types.IndexResult) {

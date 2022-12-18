@@ -22,11 +22,13 @@ import (
 	"sync"
 
 	"github.com/anchore/packageurl-go"
-	"github.com/docker/cli/cli/command"
-	"github.com/docker/index-cli-plugin/types"
 	"github.com/gookit/color"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
+
+	"github.com/docker/cli/cli/command"
+
+	"github.com/docker/index-cli-plugin/types"
 )
 
 type colors struct {

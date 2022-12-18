@@ -23,13 +23,15 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/docker/index-cli-plugin/internal"
-	"github.com/docker/index-cli-plugin/types"
 	"github.com/hasura/go-graphql-client"
 
-	"github.com/atomist-skills/go-skill"
+	"github.com/docker/index-cli-plugin/internal"
+	"github.com/docker/index-cli-plugin/types"
+
 	"github.com/pkg/errors"
 	"olympos.io/encoding/edn"
+
+	"github.com/atomist-skills/go-skill"
 )
 
 type CveResult struct {

@@ -21,6 +21,7 @@ import (
 	"strings"
 
 	"github.com/docker/cli/cli/command"
+
 	"github.com/docker/index-cli-plugin/internal"
 	"github.com/docker/index-cli-plugin/query"
 	"github.com/docker/index-cli-plugin/types"

@@ -23,9 +23,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/atomist-skills/go-skill"
-	"github.com/docker/cli/cli/command"
-	"github.com/docker/index-cli-plugin/internal"
 	"github.com/dustin/go-humanize"
 	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/name"
@@ -37,6 +34,12 @@ import (
 	"github.com/google/go-containerregistry/pkg/v1/tarball"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
+
+	"github.com/atomist-skills/go-skill"
+
+	"github.com/docker/cli/cli/command"
+
+	"github.com/docker/index-cli-plugin/internal"
 )
 
 type ImageId struct {
