@@ -50,6 +50,7 @@ func (r *singleLayerResolver) FilesByPath(paths ...string) ([]source.Location, e
 		tree := r.layer.Tree
 		_, ref, err := tree.File(file.Path(path), filetree.FollowBasenameLinks, filetree.DoNotFollowDeadBasenameLinks)
 		if err != nil {
+			return nil, err // or continue if we want to ignore it
 		}
 		locations = append(locations, source.NewLocation(ref.String()))
 	}
@@ -62,6 +63,7 @@ func (r *singleLayerResolver) FilesByGlob(patterns ...string) ([]source.Location
 		tree := r.layer.Tree
 		refs, err := tree.FilesByGlob(pattern, filetree.FollowBasenameLinks, filetree.DoNotFollowDeadBasenameLinks)
 		if err != nil {
+			return nil, err // or continue if we want to ignore it
 		}
 		for _, r := range refs {
 			locations = append(locations, source.NewLocation(string(r.RealPath)))
