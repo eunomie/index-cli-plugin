@@ -30,7 +30,7 @@ type singleLayerResolver struct {
 	layer *image.Layer
 }
 
-func NewSingleLayerResolver(layer *image.Layer) *singleLayerResolver {
+func NewSingleLayerResolver(layer *image.Layer) source.FileResolver {
 	return &singleLayerResolver{layer: layer}
 }
 
