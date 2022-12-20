@@ -83,6 +83,7 @@ func QueryCves(sb *types.Sbom, cve string, workspace string, apiKey string) (*[]
 		return nil, errors.Wrapf(err, "failed to run query")
 	}
 	var result QueryResult
+	defer resp.Body.Close()
 	err = edn.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to unmarshal response")

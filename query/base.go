@@ -101,6 +101,7 @@ func ForBaseImageInIndex(digest digest.Digest, workspace string, apiKey string) 
 
 	if resp.StatusCode == 200 {
 		var manifestList []types.IndexManifestList
+		defer resp.Body.Close()
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to read response body")
@@ -140,6 +141,7 @@ func ForBaseImageWithoutCve(cve string, name string, sb *types.Sbom, workspace s
 	resp, err := query(fmt.Sprintf(baseImageCveQuery, cve, name, cf.OS, cf.Architecture, cf.Variant), "base_image_cve_query", workspace, apiKey)
 
 	var result ImageQueryResult
+	defer resp.Body.Close()
 	err = edn.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to unmarshal response")
@@ -177,6 +179,7 @@ func ForBaseImageInDb(digest digest.Digest, workspace string, apiKey string) (*[
 	resp, err := query(fmt.Sprintf(baseImageQuery, digest), "base_image_query", workspace, apiKey)
 
 	var result ImageQueryResult
+	defer resp.Body.Close()
 	err = edn.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to unmarshal response")
@@ -206,6 +209,7 @@ func ForRepositoryInDb(repo string, workspace string, apiKey string) (*types.Rep
 	resp, err := query(fmt.Sprintf(repositoryQuery, repo), "repository_query", workspace, apiKey)
 
 	var result RepositoryQueryResult
+	defer resp.Body.Close()
 	err = edn.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to unmarshal response")
